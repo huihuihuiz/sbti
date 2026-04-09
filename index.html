@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人格测试中心 | Personality Test Hub</title>
+    <style>
+        :root {
+            --bg: #0a0a0c;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text: #ffffff;
+            --text-dim: #a0a0a0;
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.5);
+            --pbti-gradient: linear-gradient(135deg, #c8a96e 0%, #9a7a45 100%);
+            --sbti-gradient: linear-gradient(135deg, #333 0%, #000 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(199, 169, 110, 0.05) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #a0a0a0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            margin-bottom: 4rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+            width: 100%;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .card.pbti::before { background: var(--pbti-gradient); }
+        .card.sbti::before { background: var(--sbti-gradient); }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .desc {
+            color: var(--text-dim);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .card:hover .btn {
+            background: #fff;
+            color: #000;
+        }
+
+        .footer {
+            margin-top: 6rem;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            opacity: 0.5;
+        }
+
+        /* Ambient animation */
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: var(--accent-glow);
+            filter: blur(150px);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.1;
+            animation: move 20s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-30%, -30%); }
+            to { transform: translate(30%, 30%); }
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            .grid { gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+    
+    <div class="container">
+        <h1>Personality Discovery</h1>
+        <p class="subtitle">探索真实的自我，从这里开始</p>
+
+        <div class="grid">
+            <a href="pbti.html" class="card pbti" id="pbti-card">
+                <div class="icon">📷</div>
+                <h2>PBTI 摄影师人格</h2>
+                <p class="desc">25道题，测出你是哪种摄影师人格。街头猎人、器材发烧友、氛围缔造者……你的片子早就出卖了你。</p>
+                <div class="btn">开始探索</div>
+            </a>
+
+            <a href="sbti.html" class="card sbti" id="sbti-card">
+                <div class="icon">⚛️</div>
+                <h2>SBTI 抽象人格</h2>
+                <p class="desc">MBTI已经过时了，SBTI来了。31道题测出你的真实抽象人格。死者？草者？吗喽？还是ATM机？</p>
+                <div class="btn">开始探索</div>
+            </a>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 Personality Test Hub · 仅供娱乐
+        </div>
+    </div>
+
+    <script>
+        // Smooth hover effect
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+                
+                // Subtle tilt
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                card.style.transform = `perspective(1000px) translateY(-10px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = `perspective(1000px) translateY(0) rotateX(0) rotateY(0)`;
+            });
+        });
+    </script>
+</body>
+</html>

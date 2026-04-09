@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SBTI 人格测试</title>
+<meta name="description" content="MBTI已经过时了，SBTI来了。31道题测出你的真实抽象人格。">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  background:#f5f4f0;
+  color:#1a1a1a;
+  min-height:100%;
+  line-height:1.6;
+}
+#app{
+  max-width:640px;
+  margin:0 auto;
+  padding:2rem 1.25rem 4rem;
+  min-height:100vh;
+}
+
+/* screens */
+.screen{display:none}
+.screen.active{display:block}
+
+/* start screen */
+.title-block{padding:3rem 0 2rem;text-align:center}
+.logo{font-size:clamp(56px,16vw,96px);font-weight:700;letter-spacing:-3px;color:#1a1a1a;line-height:1;display:block}
+.logo-sub{font-size:15px;color:#888;margin-top:6px;letter-spacing:2px;text-transform:uppercase}
+.tagline{font-size:20px;font-weight:600;color:#1a1a1a;margin:0 0 12px}
+.intro-desc{font-size:15px;color:#555;line-height:1.8;margin-bottom:1.75rem}
+.notice-box{
+  background:#fff;
+  border:1px solid #e8e6e0;
+  border-radius:12px;
+  padding:1rem 1.25rem;
+  font-size:13px;
+  color:#777;
+  line-height:1.8;
+  margin-bottom:2rem;
+}
+.notice-box strong{color:#555;font-weight:600}
+
+/* buttons */
+.btn-start{
+  display:block;width:100%;
+  padding:16px;
+  background:#1a1a1a;color:#fff;
+  border:none;border-radius:12px;
+  font-size:17px;font-weight:600;
+  cursor:pointer;text-align:center;
+  letter-spacing:0.5px;
+  transition:opacity .15s,transform .1s;
+}
+.btn-start:hover{opacity:0.88}
+.btn-start:active{transform:scale(0.98)}
+.btn-outline{
+  display:block;width:100%;
+  padding:14px;
+  background:transparent;
+  color:#1a1a1a;
+  border:1px solid #ccc;
+  border-radius:12px;
+  font-size:15px;font-weight:500;
+  cursor:pointer;text-align:center;
+  margin-top:10px;
+  transition:background .12s;
+}
+.btn-outline:hover{background:#f0ede8}
+
+/* test screen */
+.progress-wrap{margin-bottom:2rem}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.progress-label{font-size:13px;color:#999}
+.progress-pct{font-size:13px;font-weight:600;color:#1a1a1a}
+.progress-track{height:4px;background:#e8e6e0;border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:#1a1a1a;transition:width .35s ease;border-radius:2px}
+
+.q-text{
+  font-size:18px;font-weight:600;
+  color:#1a1a1a;
+  line-height:1.6;
+  margin-bottom:1.75rem;
+}
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:1.5rem}
+.opt-btn{
+  padding:14px 16px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  background:#fff;
+  color:#333;
+  font-size:15px;
+  cursor:pointer;
+  text-align:left;
+  line-height:1.55;
+  transition:background .12s,border-color .12s,color .12s,transform .08s;
+}
+.opt-btn:hover{background:#f5f4f0;border-color:#bbb}
+.opt-btn:active{transform:scale(0.99)}
+.opt-btn.selected{
+  background:#1a1a1a;
+  color:#fff;
+  border-color:#1a1a1a;
+}
+.hint-text{font-size:13px;color:#aaa;text-align:center}
+
+/* result screen */
+.result-top{text-align:center;padding:2.5rem 0 1.5rem}
+.result-eng{
+  font-size:clamp(44px,13vw,76px);
+  font-weight:700;
+  letter-spacing:2px;
+  color:#1a1a1a;
+  line-height:1;
+  margin-bottom:8px;
+}
+.result-zh{
+  font-size:24px;
+  font-weight:600;
+  color:#333;
+  margin-bottom:12px;
+}
+.result-pill{
+  display:inline-block;
+  padding:5px 16px;
+  background:#f0ede8;
+  color:#666;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:500;
+  border:1px solid #e0ddd8;
+}
+.result-card{
+  background:#fff;
+  border:1px solid #e8e6e0;
+  border-radius:14px;
+  padding:1.25rem 1.5rem;
+  margin:1.25rem 0;
+}
+.result-card-label{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+  color:#bbb;
+  margin-bottom:10px;
+}
+.result-card-body{
+  font-size:15px;
+  color:#333;
+  line-height:1.85;
+}
+.dims-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:1.25rem 0}
+.dim-item{
+  background:#f5f4f0;
+  border-radius:10px;
+  padding:12px 14px;
+}
+.dim-key{font-size:11px;color:#aaa;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.dim-val{font-size:18px;font-weight:600;color:#1a1a1a}
+.share-hint{
+  font-size:13px;color:#aaa;
+  text-align:center;
+  margin-top:0.75rem;
+  line-height:1.6;
+}
+
+/* divider */
+.divider{height:1px;background:#e8e6e0;margin:1.5rem 0}
+
+/* footer */
+.footer{
+  text-align:center;
+  font-size:12px;
+  color:#ccc;
+  margin-top:3rem;
+  padding-top:1.5rem;
+  border-top:1px solid #e8e6e0;
+}
+
+/* Export Template Styling */
+#export-container {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+.export-card {
+  width: 450px;
+  padding: 40px;
+  background: #fdfcf9;
+  color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid #ddd;
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+}
+.export-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 100% 0%, rgba(0,0,0,0.03) 0%, transparent 60%);
+}
+.export-header {
+  border-bottom: 2px solid #1a1a1a;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+}
+.export-logo { font-size: 48px; font-weight: 800; letter-spacing: -2px; }
+.export-title { font-size: 14px; color: #888; text-transform: uppercase; letter-spacing: 2px; }
+.export-result-code { font-size: 72px; font-weight: 800; line-height: 1; margin: 20px 0 10px; }
+.export-result-name { font-size: 28px; font-weight: 600; margin-bottom: 10px; }
+.export-result-tag { font-size: 14px; background: #1a1a1a; color: #fff; padding: 4px 12px; border-radius: 99px; display: inline-block; }
+.export-desc { font-size: 16px; color: #444; line-height: 1.8; margin: 30px 0; border-left: 3px solid #1a1a1a; padding-left: 20px; }
+.export-footer { margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; color: #aaa; font-size: 12px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ========== START SCREEN ========== -->
+<div id="screen-start" class="screen active">
+  <div class="title-block">
+    <span class="logo">SBTI</span>
+    <div class="logo-sub">人格测试</div>
+  </div>
+  <p class="tagline">MBTI 已经过时了，SBTI 来了</p>
+  <p class="intro-desc">
+    通过 31 道题，测出你真实的抽象人格类型。<br>
+    死者？草者？吗喽？还是 ATM 机？<br>
+    快来看看你是哪种离谱人格。
+  </p>
+  <div class="notice-box">
+    ⚠️ <strong>免责声明：</strong>本测试仅供娱乐，别拿它当诊断、面试、相亲、分手、招魂、算命或人生判决书。结果具有一定攻击性，请做好心理准备。
+  </div>
+  <button class="btn-start" onclick="startTest()">开始测试 →</button>
+</div>
+
+<!-- ========== TEST SCREEN ========== -->
+<div id="screen-test" class="screen">
+  <div class="progress-wrap">
+    <div class="progress-top">
+      <span class="progress-label" id="q-num">1 / 31</span>
+      <span class="progress-pct" id="q-pct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="prog" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="q-text" id="q-text"></div>
+  <div class="options" id="options"></div>
+  <p class="hint-text">选择后自动进入下一题</p>
+</div>
+
+<!-- ========== RESULT SCREEN ========== -->
+<div id="screen-result" class="screen">
+  <div class="result-top">
+    <div class="result-eng" id="res-code"></div>
+    <div class="result-zh" id="res-name"></div>
+    <span class="result-pill" id="res-tag"></span>
+  </div>
+
+  <div class="result-card">
+    <div class="result-card-label">人格解读</div>
+    <p class="result-card-body" id="res-desc"></p>
+  </div>
+
+  <div class="dims-grid" id="dims-grid"></div>
+
+  <div class="result-card">
+    <div class="result-card-label">你的标签</div>
+    <p class="result-card-body" id="res-tags" style="color:#999;font-size:14px;line-height:2"></p>
+  </div>
+
+  <div class="divider"></div>
+
+  <button class="btn-start" onclick="restart()">再测一次</button>
+  <button class="btn-outline" onclick="exportCard()">生成分享卡片 📸</button>
+
+  <p class="share-hint" id="share-msg"></p>
+
+  <div id="export-container"></div>
+
+  <div class="footer">
+    SBTI 人格测试 &nbsp;·&nbsp; 仅供娱乐
+  </div>
+</div>
+
+</div>
+
+<script>
+const questions = [
+  {text:"在一个周五晚上，你最可能在做什么？",opts:[
+    {t:"在家刷手机/看视频，拒绝一切社交",s:{I:2}},
+    {t:"和朋友出去吃饭喝酒，越热闹越好",s:{S:2}},
+    {t:"在家搞自己的事情，很充实",s:{T:2}},
+    {t:"在群里发消息，但并没有人回",s:{B:2}}
+  ]},
+  {text:"朋友问你要不要一起去唱K，你的第一反应是？",opts:[
+    {t:"拒绝，我不想出门，但我会说\"下次吧\"",s:{I:2}},
+    {t:"好啊好啊！冲！",s:{S:2}},
+    {t:"看情况，看谁去",s:{T:1,B:1}},
+    {t:"答应了，然后去了，但不唱歌只喝酒",s:{B:2}}
+  ]},
+  {text:"你因玩网游而结识许多网友，并被邀请线下见面，你的想法是？",opts:[
+    {t:"不去，网友=陌生人，我很警惕",s:{I:2}},
+    {t:"去！认识新朋友！",s:{S:2}},
+    {t:"先了解对方底细再说",s:{T:2}},
+    {t:"去了，然后一句话没说，喝了三杯奶茶走了",s:{B:2}}
+  ]},
+  {text:"当你独处的时候，你在想什么？",opts:[
+    {t:"什么都没想，脑子放空",s:{I:2}},
+    {t:"想最近发生的趣事，期待下次聚会",s:{S:2}},
+    {t:"思考人生意义、宇宙起源、自我价值",s:{T:2}},
+    {t:"发呆，然后突然哭了，也不知道为啥",s:{B:2}}
+  ]},
+  {text:"你理想中的假期是？",opts:[
+    {t:"一个人宅家，什么都不干，极其舒适",s:{I:2}},
+    {t:"去人多热闹的景点，打卡拍照",s:{S:2}},
+    {t:"去一个安静的地方思考和充电",s:{T:2}},
+    {t:"本来计划要出去，最后没出去",s:{B:2}}
+  ]},
+  {text:"关于喝酒，你的态度是？",opts:[
+    {t:"不喝，我不喜欢喝酒",s:{I:1,T:1}},
+    {t:"能喝！喝到嗨！",s:{S:2}},
+    {t:"适量喝，喝点放松但不失控",s:{T:2}},
+    {t:"喝得很多，并且是为了麻痹自己",s:{B:2}}
+  ]},
+  {text:"你的另一半非常完美——尊老爱幼、温柔敦厚、博学多才、玉树临风，此时你会？",opts:[
+    {t:"我没有另一半，谢谢",s:{I:2,B:1}},
+    {t:"这种人真的存在吗？我找到了！",s:{S:2}},
+    {t:"保持怀疑，没人能完美无缺",s:{T:2}},
+    {t:"珍惜TA，但内心觉得自己配不上",s:{B:2}}
+  ]},
+  {text:"当你面对一个不熟悉的人，你会？",opts:[
+    {t:"等对方先开口，我不擅长主动",s:{I:2}},
+    {t:"主动上去打招呼！",s:{S:2}},
+    {t:"观察对方，看看值不值得深交",s:{T:2}},
+    {t:"假装在看手机，但其实很想聊",s:{B:2}}
+  ]},
+  {text:"你突然觉得人生根本没有意义，人不过是被欲望支配的动物，你的反应是？",opts:[
+    {t:"这话有道理但太消极，我还是有希望的",s:{I:1,T:1}},
+    {t:"不认同！人生是有意义的！我热爱生活！",s:{S:2}},
+    {t:"这就是哲学虚无主义，我研究过",s:{T:2}},
+    {t:"这不就说的是我吗……",s:{B:2}}
+  ]},
+  {text:"你的手机相册里最多的是什么？",opts:[
+    {t:"截图和表情包",s:{I:2}},
+    {t:"和朋友、美食、旅游的照片",s:{S:2}},
+    {t:"工作/学习资料的截图",s:{T:2}},
+    {t:"凌晨拍的空白天花板",s:{B:2}}
+  ]},
+  {text:"你在一个陌生的聚会上，你会？",opts:[
+    {t:"找个角落待着，等着回家",s:{I:2}},
+    {t:"认识所有人，成为焦点",s:{S:2}},
+    {t:"找几个聊得来的认真聊",s:{T:2}},
+    {t:"全程笑着，但内心空空的",s:{B:2}}
+  ]},
+  {text:"面对一件事情，你更倾向于？",opts:[
+    {t:"先考虑自己的感受",s:{I:1,B:1}},
+    {t:"直接行动，想太多没用",s:{S:2}},
+    {t:"分析利弊，做出最优选择",s:{T:2}},
+    {t:"拖着，等到最后一刻再说",s:{B:2}}
+  ]},
+  {text:"当有人说你不行/你做不到，你会？",opts:[
+    {t:"内心受伤，但表面不动声色",s:{I:1,B:1}},
+    {t:"当场证明给他们看！",s:{S:2}},
+    {t:"理性分析，看看他们说的有没有道理",s:{T:2}},
+    {t:"觉得他们说得对……",s:{B:2}}
+  ]},
+  {text:"你觉得自己最大的问题是什么？",opts:[
+    {t:"太封闭，不愿意敞开心扉",s:{I:2}},
+    {t:"太冲动，容易被情绪左右",s:{S:2}},
+    {t:"太冷漠，容易让人觉得不近人情",s:{T:2}},
+    {t:"太废物，什么都做不好",s:{B:2}}
+  ]},
+  {text:"深夜12点，你在干嘛？",opts:[
+    {t:"睡觉/准备睡觉",s:{I:1,T:1}},
+    {t:"和朋友视频或出去玩",s:{S:2}},
+    {t:"刷文章、看书、学习",s:{T:2}},
+    {t:"刷手机刷到天亮，然后后悔",s:{B:2}}
+  ]},
+  {text:"别人找你倾诉烦恼，你会？",opts:[
+    {t:"认真听，但不知道怎么回应",s:{I:1,T:1}},
+    {t:"立刻给建议，帮他们解决问题",s:{S:2}},
+    {t:"分析问题根源，给出逻辑建议",s:{T:2}},
+    {t:"一边听一边想自己的问题",s:{B:2}}
+  ]},
+  {text:"对于'努力就会成功'这句话，你怎么看？",opts:[
+    {t:"不完全认同，运气也很重要",s:{I:1,T:1}},
+    {t:"认同！努力一定有回报！",s:{S:2}},
+    {t:"需要辩证看待，定义努力和成功很关键",s:{T:2}},
+    {t:"我努力过，没用，所以不信",s:{B:2}}
+  ]},
+  {text:"你最近有没有无缘无故感到焦虑？",opts:[
+    {t:"有，但说不出原因",s:{I:1,B:1}},
+    {t:"没有，我活得很充实",s:{S:2}},
+    {t:"有，但我在分析原因并解决它",s:{T:2}},
+    {t:"一直都有，已经习惯了",s:{B:2}}
+  ]},
+  {text:"如果你有一天突然消失，你觉得会有几个人注意到？",opts:[
+    {t:"几个，但不多",s:{I:2}},
+    {t:"很多！我朋友很多！",s:{S:2}},
+    {t:"取决于我扮演的社会角色",s:{T:2}},
+    {t:"可能没有……或者很晚才发现",s:{B:2}}
+  ]},
+  {text:"你更愿意花钱在？",opts:[
+    {t:"独处的爱好，书/游戏/装备",s:{I:2}},
+    {t:"和朋友吃饭聚会出去玩",s:{S:2}},
+    {t:"能提升自我的事情",s:{T:2}},
+    {t:"买了但没用的东西",s:{B:2}}
+  ]},
+  {text:"你最害怕的是？",opts:[
+    {t:"被人看穿内心",s:{I:2}},
+    {t:"被孤立，没有朋友",s:{S:2}},
+    {t:"失去控制感，事情脱轨",s:{T:2}},
+    {t:"一辈子就这样了，什么都没改变",s:{B:2}}
+  ]},
+  {text:"你觉得自己是一个幸福的人吗？",opts:[
+    {t:"说不清，偶尔幸福",s:{I:1,T:1}},
+    {t:"是的！生活很好！",s:{S:2}},
+    {t:"幸福取决于定义，相对来说还行",s:{T:2}},
+    {t:"不幸福，但没办法",s:{B:2}}
+  ]},
+  {text:"当你做了一个错误的决定，你会？",opts:[
+    {t:"默默懊悔，一个人扛着",s:{I:1,B:1}},
+    {t:"马上采取行动弥补",s:{S:2}},
+    {t:"分析哪里出了问题，下次改进",s:{T:2}},
+    {t:"持续自责，很久走不出来",s:{B:2}}
+  ]},
+  {text:"你觉得大多数人理解你吗？",opts:[
+    {t:"不太理解，我有时候觉得自己很怪",s:{I:2}},
+    {t:"理解！大家都挺懂我的",s:{S:2}},
+    {t:"理解我的层面很浅，真正懂的很少",s:{T:2}},
+    {t:"没有人理解我",s:{B:2}}
+  ]},
+  {text:"看到别人比你成功，你会？",opts:[
+    {t:"有一点羡慕，但接受",s:{I:1,T:1}},
+    {t:"向他们学习！取长补短！",s:{S:2}},
+    {t:"分析他们成功的原因",s:{T:2}},
+    {t:"觉得自己更烂了",s:{B:2}}
+  ]},
+  {text:"你平时发说说/朋友圈/微博吗？",opts:[
+    {t:"不发，或者发了设置仅自己可见",s:{I:2}},
+    {t:"经常发，记录生活！",s:{S:2}},
+    {t:"偶尔发，有感而发",s:{T:2}},
+    {t:"想发，但觉得没人关心，删掉了",s:{B:2}}
+  ]},
+  {text:"你觉得自己是什么样的人？",opts:[
+    {t:"复杂的，很难用简单的词来描述",s:{I:1,T:1}},
+    {t:"开朗外向，人缘不错",s:{S:2}},
+    {t:"独立理性，有自己的想法",s:{T:2}},
+    {t:"没什么特别的，普普通通甚至更差",s:{B:2}}
+  ]},
+  {text:"未来5年，你希望自己？",opts:[
+    {t:"找到内心的平静，过安稳的生活",s:{I:2}},
+    {t:"事业爱情双丰收！",s:{S:2}},
+    {t:"在某个领域做出成绩",s:{T:2}},
+    {t:"不知道……能活着就不错了",s:{B:2}}
+  ]},
+  {text:"如果给你24小时独处，没有手机，你会？",opts:[
+    {t:"很舒适！我需要这种时间",s:{I:2}},
+    {t:"崩溃！我需要社交！",s:{S:2}},
+    {t:"完成一件一直想做的事",s:{T:2}},
+    {t:"发呆然后睡觉然后不知道干嘛",s:{B:2}}
+  ]},
+  {text:"你上一次真心笑是什么时候？",opts:[
+    {t:"昨天，一个人看视频笑了",s:{I:2}},
+    {t:"今天！和朋友在一起！",s:{S:2}},
+    {t:"上周，完成了一个目标",s:{T:2}},
+    {t:"想不起来了",s:{B:2}}
+  ]},
+  {text:"最后一题：选一个最像你的句子",opts:[
+    {t:"我需要独处来充电，人多让我累",s:{I:2}},
+    {t:"生活是用来享受的，我很快乐",s:{S:2}},
+    {t:"我用逻辑和理性看待这个世界",s:{T:2}},
+    {t:"我很累，但不知道累在哪里",s:{B:2}}
+  ]}
+];
+
+const personalities = {
+  SOLO:{name:"孤儿",eng:"SOLO",tag:"极度内向者",
+    desc:"恭喜您测出了传说中的孤独人格。您不是不喜欢人，您只是觉得大多数人不值得您的社交成本。您的世界很小，但您在里面是国王/女王。外面那些喧嚣与您无关，您只需要几部好剧、一个安静的角落和足够的充电时间。孤儿并非孤独，而是主动选择了与世界保持距离。",
+    dims:{社交:"内向",决策:"理智",能量:"独处",状态:"稳定"}},
+  SHOW:{name:"草者",eng:"SHOW-OFF",tag:"表演型外向者",
+    desc:"您天生自带聚光灯。走进任何房间，您都能成为焦点。这不是您的错，是您的本能。您热爱生活、热爱人群、热爱被看见。有时候别人觉得您肤浅，但真实太重要了——您就是喜欢热闹，有问题么？生命在于燃烧，而您一直在燃烧。",
+    dims:{社交:"外向",决策:"感性",能量:"人群",状态:"活跃"}},
+  SHIT:{name:"愤世者",eng:"SHIT",tag:"清醒的悲观主义者",
+    desc:"您看透了这个世界的荒谬，然后选择了一种独特的处世方式——什么都不在乎，但又什么都在乎。您的表面是冷漠，内心是一团燃烧的火。您不是真的愤世嫉俗，您只是期望太高，失望太多。这个世界构石一坨，但您还是会在某个深夜，对一件小事感到无比温柔。",
+    dims:{社交:"中性",决策:"理智",能量:"矛盾",状态:"燃烧"}},
+  DEAD:{name:"死者",eng:"DEAD",tag:"存在主义危机常客",
+    desc:"您还活着吗？这个问题您自己也不确定。您不是真的想消失，您只是累了。累到对很多事情失去了感知，累到不知道什么让您快乐，累到那句\"我很好\"已经成为了反射性回应。但您还在，还在刷手机，还在看到某个东西会心一笑。这说明里面还有什么在。",
+    dims:{社交:"内向",决策:"感性",能量:"漂移",状态:"低迷"}},
+  MAMA:{name:"妈妈",eng:"MUM",tag:"无限付出型人格",
+    desc:"或许我可以叫您妈妈吗？您天生有一种照顾别人的本能。别人有烦恼找您，您就算自己一团糟也会先帮对方理清楚。您付出时间、精力、情绪，却经常忘记问一句：有人关心我吗？MUM的悲剧不在于太好，而在于太少把自己放在需要被照顾的位置上。",
+    dims:{社交:"外向",决策:"感性",能量:"奉献",状态:"透支"}},
+  THINKER:{name:"智者",eng:"BIG BRAIN",tag:"过度思考者",
+    desc:"您的大脑是一台永不关机的服务器。睡前要思考，看个剧也要分析，和人聊天会自动提炼观点。您不是无聊，您是真的很有趣，只是大多数人跟不上您的频率。有时候您会累，累于思考本身。建议：偶尔允许自己不想任何事情，让大脑放个假。",
+    dims:{社交:"中性",决策:"理智",能量:"深度",状态:"高转速"}},
+  FAKE:{name:"伪人",eng:"FAKE",tag:"高功能隐藏者",
+    desc:"您在人前总是那个没问题的人。笑着、说着没事、配合着所有人的期待。但人后，您一个人待着，不知道刚才那个自己是不是真实的。伪人不等于虚伪，只是您习惯了把真实的自己保护起来，因为您见过真实被辜负的代价。",
+    dims:{社交:"外向",决策:"感性",能量:"伪装",状态:"分裂"}},
+  ATM:{name:"送钱者",eng:"ATM-er",tag:"金融界的未解之谜",
+    desc:"恭喜您，您竟然测出了这个世界上最稀有的人格。ATM-er不一定真的送钱，但可能永远在支付——支付时间、支付精力、支付耐心、支付一个本该安宁的夜晚。像一部老旧但坚固的ATM机，插进去的是别人的焦虑和麻烦，吐出来的是\"没事，有我\"的安心保证。",
+    dims:{社交:"外向",决策:"感性",能量:"奉献",状态:"耗尽"}},
+  JOKER:{name:"小丑",eng:"JOKE-R",tag:"用笑掩盖一切的人",
+    desc:"原来我们都是小丑。您是那种永远在讲段子、永远让别人发笑的人。但只有深夜一个人的时候，您才摘下面具。不是因为您不快乐，而是因为快乐这件事对您来说有时候更像是一种表演。而表演久了，有时候自己也分不清了。",
+    dims:{社交:"外向",决策:"矛盾",能量:"幽默",状态:"敏感"}},
+  IMSB:{name:"自我攻击者",eng:"IMSB",tag:"认真的自我怀疑者",
+    desc:"认真的么？我真的是这种人格么？您最擅长的就是怀疑自己。别人说您好，您觉得他们在客气；事情做成了，您觉得是运气；做错了，您会记很久。IMSB不是在自毁，而是对自己有某种过高的标准，高到没人能达到，包括您自己。",
+    dims:{社交:"内向",决策:"感性",能量:"自省",状态:"苛刻"}}
+};
+
+let scores={I:0,S:0,T:0,B:0};
+let curQ=0;
+let currentPersonality=null;
+
+function startTest(){
+  scores={I:0,S:0,T:0,B:0};
+  curQ=0;
+  showScreen('screen-test');
+  renderQ();
+}
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderQ(){
+  const q=questions[curQ];
+  const pct=Math.round((curQ/questions.length)*100);
+  document.getElementById('prog').style.width=pct+'%';
+  document.getElementById('q-num').textContent=(curQ+1)+' / '+questions.length;
+  document.getElementById('q-pct').textContent=pct+'%';
+  document.getElementById('q-text').textContent=q.text;
+  const opts=document.getElementById('options');
+  opts.innerHTML='';
+  const shuffled=[...q.opts].sort(()=>Math.random()-0.5);
+  shuffled.forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=o.t;
+    b.onclick=()=>pick(b,o.s);
+    opts.appendChild(b);
+  });
+}
+
+function pick(btn,delta){
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  setTimeout(()=>{
+    Object.keys(delta).forEach(k=>scores[k]=(scores[k]||0)+delta[k]);
+    curQ++;
+    if(curQ>=questions.length) showResult();
+    else renderQ();
+  },300);
+}
+
+function calcType(){
+  const B=scores.B||0,I=scores.I||0,S=scores.S||0,T=scores.T||0;
+  if(B>=14) return Math.random()>0.5?'DEAD':'IMSB';
+  if(B>=10){
+    if(S>=8) return 'JOKER';
+    if(I>=8) return 'FAKE';
+    return 'DEAD';
+  }
+  if(S>=14) return Math.random()>0.5?'SHOW':'ATM';
+  if(T>=14) return 'THINKER';
+  if(I>=14) return 'SOLO';
+  if(S>=10&&T>=8) return 'MAMA';
+  if(B>=6&&I>=8) return 'SHIT';
+  if(S>=8) return 'SHOW';
+  if(T>=8) return 'THINKER';
+  if(I>=8) return 'SOLO';
+  return 'SHIT';
+}
+
+function showResult(){
+  const key=calcType();
+  const p=personalities[key];
+  currentPersonality=p;
+  document.getElementById('res-code').textContent=p.eng;
+  document.getElementById('res-name').textContent=p.name;
+  document.getElementById('res-tag').textContent=p.tag;
+  document.getElementById('res-desc').textContent=p.desc;
+  const dg=document.getElementById('dims-grid');
+  dg.innerHTML='';
+  Object.entries(p.dims).forEach(([k,v])=>{
+    dg.innerHTML+=`<div class="dim-item"><div class="dim-key">${k}</div><div class="dim-val">${v}</div></div>`;
+  });
+  document.getElementById('res-tags').textContent=['#'+p.name,'#'+p.eng,'#SBTI人格测试','#'+p.tag].join('  ');
+  document.getElementById('share-msg').textContent='';
+  showScreen('screen-result');
+}
+
+function restart(){
+  showScreen('screen-start');
+}
+
+function shareResult(){
+  if(!currentPersonality) return;
+  const text=`我的SBTI人格是 ${currentPersonality.eng}（${currentPersonality.name}）\n${currentPersonality.tag}\n\n快来测测你是什么人格 →`;
+  if(navigator.share){
+    navigator.share({title:'SBTI人格测试',text:text,url:location.href}).catch(()=>{});
+  } else if(navigator.clipboard){
+    navigator.clipboard.writeText(text+'\n'+location.href).then(()=>{
+      document.getElementById('share-msg').textContent='✓ 已复制到剪贴板，去粘贴分享吧！';
+    }).catch(()=>{
+      document.getElementById('share-msg').textContent='复制失败，请手动截图分享';
+    });
+  } else {
+    document.getElementById('share-msg').textContent='请截图分享你的结果';
+  }
+}
+
+function exportCard() {
+  if (!currentPersonality) return;
+  const container = document.getElementById('export-container');
+  container.innerHTML = `
+    <div class="export-card" id="final-card">
+      <div class="export-header">
+        <div class="export-logo">SBTI</div>
+        <div class="export-title">抽象人格测试报告</div>
+      </div>
+      <div class="export-result-code">${currentPersonality.eng}</div>
+      <div class="export-result-name">${currentPersonality.name}</div>
+      <div class="export-result-tag">${currentPersonality.tag}</div>
+      <div class="export-desc">${currentPersonality.desc}</div>
+      <div class="export-footer">
+        <div>#SBTI #人格测试</div>
+        <div>Personality Test Hub</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('share-msg').textContent = '正在为您生成精美卡片...';
+  
+  setTimeout(() => {
+    html2canvas(document.getElementById('final-card'), {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#fdfcf9'
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `SBTI_${currentPersonality.eng}_${new Date().getTime()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      document.getElementById('share-msg').textContent = '✨ 卡片已下载，快去分享吧！';
+    }).catch(err => {
+      console.error(err);
+      document.getElementById('share-msg').textContent = '生成失败，请重试或手动截图';
+    });
+  }, 100);
+}
+</script>
+</body>
+</html>

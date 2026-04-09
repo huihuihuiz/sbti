@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBTI 摄影师人格测试</title>
+<meta name="description" content="25道题，测出你是哪种摄影师人格。街头猎人、器材发烧友、氛围缔造者……你的片子早就出卖了你。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+:root{
+  --ink:#0e0e0e;
+  --paper:#f7f4ee;
+  --grain:#ede9e0;
+  --accent:#c8a96e;
+  --accent-dark:#9a7a45;
+  --muted:#8a8478;
+  --red:#c94f3a;
+  --green:#3a7a3a;
+  --border:#d8d2c5;
+  --card:#fffefb;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',-apple-system,'PingFang SC','Hiragino Sans GB',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse 60% 50% at 15% 85%,rgba(200,169,110,.09) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 10%,rgba(200,169,110,.07) 0%,transparent 60%);
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  opacity:.35;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+#app{
+  position:relative;z-index:1;
+  max-width:600px;margin:0 auto;
+  padding:0 1.25rem 6rem;
+}
+.screen{display:none;animation:fu .38s ease both}
+.screen.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── START ── */
+.s-top{padding:3rem 0 0;text-align:center}
+.logo{
+  font-family:var(--serif);
+  font-size:clamp(64px,18vw,100px);
+  letter-spacing:-3px;color:var(--ink);
+  line-height:1;display:block;
+}
+.logo-sub{
+  font-size:11px;font-weight:300;
+  letter-spacing:4px;color:var(--muted);
+  text-transform:uppercase;margin-top:6px;
+}
+.filmstrip{
+  display:flex;gap:3px;justify-content:center;
+  margin:1.75rem 0 1.5rem;
+  padding:0 4px;
+}
+.fr{
+  flex:1;max-width:52px;height:38px;
+  background:var(--ink);border-radius:2px;
+  position:relative;flex-shrink:0;
+  transition:opacity .3s;
+}
+.fr::before,.fr::after{
+  content:'';position:absolute;left:50%;transform:translateX(-50%);
+  width:7px;height:6px;background:var(--paper);border-radius:1px;
+}
+.fr::before{top:3px}.fr::after{bottom:3px}
+.fr:nth-child(1){opacity:.2}.fr:nth-child(2){opacity:.4}
+.fr:nth-child(3){opacity:.65}.fr:nth-child(4){opacity:1}
+.fr:nth-child(5){opacity:.75}.fr:nth-child(6){opacity:.45}.fr:nth-child(7){opacity:.2}
+
+.s-tagline{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(17px,4.5vw,22px);
+  color:var(--ink);line-height:1.55;
+  margin-bottom:.75rem;
+}
+.s-desc{
+  font-size:14px;font-weight:300;
+  color:var(--muted);line-height:1.9;
+  margin-bottom:2rem;
+}
+.notice{
+  background:rgba(200,169,110,.08);
+  border:1px solid rgba(200,169,110,.28);
+  border-radius:10px;
+  padding:.9rem 1.2rem;
+  font-size:12.5px;font-weight:300;
+  color:var(--muted);line-height:1.8;
+  margin-bottom:1.75rem;text-align:left;
+}
+.notice b{color:var(--accent-dark);font-weight:500}
+
+/* ── BUTTONS ── */
+.btn-main{
+  display:block;width:100%;padding:15px;
+  background:var(--ink);color:var(--paper);
+  border:none;border-radius:10px;
+  font-family:var(--sans);font-size:15.5px;font-weight:500;
+  cursor:pointer;letter-spacing:.3px;
+  transition:opacity .15s,transform .1s;
+  overflow:hidden;position:relative;
+}
+.btn-main:hover{opacity:.87}
+.btn-main:active{transform:scale(.985)}
+.btn-ghost{
+  display:block;width:100%;padding:13px;
+  background:transparent;color:var(--ink);
+  border:1px solid var(--border);border-radius:10px;
+  font-family:var(--sans);font-size:14.5px;font-weight:300;
+  cursor:pointer;margin-top:9px;
+  transition:background .12s;
+}
+.btn-ghost:hover{background:var(--grain)}
+
+/* ── TEST ── */
+.prog-wrap{padding:2.25rem 0 1.5rem}
+.prog-top{
+  display:flex;justify-content:space-between;
+  font-size:12px;color:var(--muted);font-weight:300;
+  margin-bottom:9px;letter-spacing:.4px;
+}
+.prog-top span:last-child{
+  font-family:var(--serif);font-style:italic;
+  font-size:13px;color:var(--accent-dark);
+}
+.prog-track{height:2px;background:var(--border);border-radius:1px;overflow:hidden}
+.prog-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--accent-dark),var(--accent));
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+  border-radius:1px;
+}
+.q-cat{
+  display:inline-block;
+  font-size:10.5px;font-weight:500;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent-dark);
+  background:rgba(200,169,110,.11);
+  padding:3px 10px;border-radius:999px;
+  margin-bottom:.8rem;
+  border:1px solid rgba(200,169,110,.22);
+}
+.q-text{
+  font-family:var(--serif);
+  font-size:clamp(16.5px,4.2vw,20px);
+  color:var(--ink);line-height:1.65;
+  margin-bottom:1.75rem;
+}
+.opts{display:flex;flex-direction:column;gap:9px;margin-bottom:1.5rem}
+.opt{
+  padding:13px 16px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--card);
+  color:#3a3830;
+  font-family:var(--sans);
+  font-size:14px;font-weight:300;
+  cursor:pointer;text-align:left;line-height:1.6;
+  transition:border-color .13s,background .13s,transform .1s;
+}
+.opt:hover{border-color:var(--accent);background:rgba(200,169,110,.05);transform:translateX(3px)}
+.opt.sel{background:var(--ink);color:var(--paper);border-color:var(--ink);transform:translateX(0)}
+.hint-t{font-size:12px;color:var(--muted);text-align:center;font-weight:300;letter-spacing:.3px}
+
+/* ── RESULT ── */
+.r-hero{
+  padding:2.75rem 0 1.75rem;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  margin-bottom:1.5rem;
+}
+.r-icon{font-size:46px;display:block;margin-bottom:1rem}
+.r-eng{
+  font-family:var(--serif);
+  font-size:clamp(34px,10vw,56px);
+  letter-spacing:-1px;color:var(--ink);
+  line-height:1;margin-bottom:6px;
+}
+.r-zh{font-size:19px;font-weight:500;color:var(--ink);margin-bottom:10px}
+.r-pill{
+  display:inline-block;padding:5px 16px;
+  background:var(--ink);color:var(--paper);
+  border-radius:999px;font-size:11.5px;font-weight:300;
+  letter-spacing:.5px;
+}
+.rcard{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:1.2rem 1.4rem;
+  margin-bottom:1rem;
+}
+.rl{
+  font-size:10px;font-weight:500;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:9px;
+}
+.rb{
+  font-size:14px;font-weight:300;
+  color:#333;line-height:1.95;
+}
+.rb em{font-style:normal;color:var(--accent-dark);font-weight:500}
+.dims{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:1rem}
+.dim{background:var(--grain);border-radius:10px;padding:11px 13px}
+.dk{font-size:10px;color:var(--muted);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px}
+.dv{font-size:15px;font-weight:500;color:var(--ink)}
+.quote-block{
+  border-left:2.5px solid var(--accent);
+  padding:.9rem 1.2rem;
+  background:rgba(200,169,110,.06);
+  border-radius:0 10px 10px 0;
+  margin-bottom:1rem;
+}
+.quote-block p{
+  font-family:var(--serif);font-style:italic;
+  font-size:15px;color:var(--ink);line-height:1.7;
+}
+.compat-row{display:flex;gap:7px;flex-wrap:wrap}
+.ctag{
+  padding:4px 12px;border-radius:999px;
+  font-size:12px;font-weight:300;border:1px solid;
+}
+.cg{background:rgba(58,122,58,.08);color:var(--green);border-color:rgba(58,122,58,.25)}
+.cb{background:rgba(201,79,58,.07);color:var(--red);border-color:rgba(201,79,58,.2)}
+.bio-text{
+  font-family:var(--serif);font-style:italic;
+  font-size:15px;color:var(--accent-dark);line-height:1.7;
+}
+.share-wrap{margin-top:1.5rem}
+.share-note{
+  font-size:12px;color:var(--muted);
+  text-align:center;margin-top:8px;
+  line-height:1.6;min-height:18px;
+}
+.footer{
+  text-align:center;font-size:11px;
+  color:var(--muted);font-weight:300;
+  letter-spacing:.5px;margin-top:3rem;
+  padding-top:1.5rem;
+  border-top:1px solid var(--border);
+}
+
+/* Export Template Styling */
+#export-container {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+.export-card-pbti {
+  width: 450px;
+  padding: 50px 40px;
+  background: #f7f4ee;
+  color: #0e0e0e;
+  font-family: 'DM Sans', sans-serif;
+  position: relative;
+  border: 1px solid #d8d2c5;
+}
+.export-card-pbti .exp-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 64px;
+  letter-spacing: -2px;
+  line-height: 1;
+  border-bottom: 2px solid #0e0e0e;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+}
+.export-card-pbti .exp-res-eng {
+  font-family: 'DM Serif Display', serif;
+  font-size: 48px;
+  letter-spacing: -1px;
+  margin-bottom: 5px;
+}
+.export-card-pbti .exp-res-zh {
+  font-size: 24px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.export-card-pbti .exp-pill {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #0e0e0e;
+  color: #f7f4ee;
+  border-radius: 99px;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.export-card-pbti .exp-desc {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #444;
+  margin: 30px 0;
+  font-style: italic;
+  font-family: 'DM Serif Display', serif;
+}
+.export-card-pbti .exp-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: #8a8478;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.export-card-pbti .exp-filmstrip {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 20px;
+}
+.export-card-pbti .exp-fr {
+  width: 30px; height: 22px;
+  background: #0e0e0e;
+  border-radius: 1px;
+  opacity: 0.3;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- START -->
+<div id="ss" class="screen active">
+  <div class="s-top">
+    <span class="logo">PBTI</span>
+    <div class="logo-sub">摄影师人格测试</div>
+  </div>
+  <div class="filmstrip">
+    <div class="fr"></div><div class="fr"></div><div class="fr"></div>
+    <div class="fr"></div><div class="fr"></div><div class="fr"></div><div class="fr"></div>
+  </div>
+  <p class="s-tagline">你的片子，早就出卖了你</p>
+  <p class="s-desc">
+    MBTI 测的是普通人，PBTI 测的是拿相机的你。<br>
+    25 道题，精准命中你作为摄影师的真实人格——<br>
+    你是独行猎人，还是氛围组的精神领袖？<br>
+    是器材发烧友，还是一辈子只拍一个题材的偏执狂？
+  </p>
+  <div class="notice">
+    <b>⚠️ 注意：</b>本测试含轻度冒犯性描述，均为善意吐槽。结果不代表摄影水平高低，代表你是哪种有趣的摄影师人格。测完记得发小红书分享～
+  </div>
+  <button class="btn-main" onclick="go()">开始测试 →</button>
+</div>
+
+<!-- TEST -->
+<div id="sq" class="screen">
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <span id="qn">1 / 25</span>
+      <span id="qcm"></span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+  </div>
+  <span class="q-cat" id="qc"></span>
+  <div class="q-text" id="qt"></div>
+  <div class="opts" id="qo"></div>
+  <p class="hint-t">选择后自动进入下一题</p>
+</div>
+
+<!-- RESULT -->
+<div id="sr" class="screen">
+  <div class="r-hero">
+    <span class="r-icon" id="ri"></span>
+    <div class="r-eng" id="re"></div>
+    <div class="r-zh" id="rz"></div>
+    <span class="r-pill" id="rp"></span>
+  </div>
+  <div class="rcard">
+    <div class="rl">人格解读</div>
+    <p class="rb" id="rd"></p>
+  </div>
+  <div class="dims" id="dm"></div>
+  <div class="quote-block"><p id="rq"></p></div>
+  <div class="rcard">
+    <div class="rl">你的拍摄现场</div>
+    <p class="rb" id="rsc"></p>
+  </div>
+  <div class="rcard">
+    <div class="rl">与其他摄影师的化学反应</div>
+    <div class="compat-row" id="rc"></div>
+  </div>
+  <div class="rcard">
+    <div class="rl">你的小红书 Bio 应该写</div>
+    <p class="bio-text" id="rb2"></p>
+  </div>
+  <div class="share-wrap">
+    <button class="btn-main" onclick="exportCard()">生成测试结果卡片 💍</button>
+    <button class="btn-ghost" onclick="restart()">再测一次</button>
+    <p class="share-note" id="sm"></p>
+  </div>
+  <div id="export-container"></div>
+  <div class="footer">PBTI 摄影师人格测试 &nbsp;·&nbsp; 仅供娱乐</div>
+</div>
+
+</div>
+<script>
+const Q=[
+  {c:"出门准备",t:"你准备出门拍照，背包里通常是？",o:[
+    {t:"一机一镜，轻装出击，去了再说",s:{S:2}},
+    {t:"两机身三镜头+备用电池×4，以防万一",s:{G:2}},
+    {t:"手机+一个小定焦，随心随性",s:{L:2}},
+    {t:"早规划好拍什么，按清单备齐",s:{C:2}}
+  ]},
+  {c:"题材选择",t:"如果只能专注一个摄影题材，你选？",o:[
+    {t:"街头纪实，抓取真实的人间百态",s:{S:2}},
+    {t:"风光大片，等光等云等那一刻",s:{L:2}},
+    {t:"人文肖像，拍出被拍者的灵魂",s:{P:2}},
+    {t:"商业/时尚，精准控制每个元素",s:{C:2}}
+  ]},
+  {c:"后期观念",t:"关于后期修图，你的立场是？",o:[
+    {t:"直出为王！后期太多是在造假",s:{F:2}},
+    {t:"适当调色，保留真实感",s:{S:1,L:1}},
+    {t:"后期是创作的一半，不修白拍",s:{C:2}},
+    {t:"我的预设一键搞定，效率第一",s:{G:1,P:1}}
+  ]},
+  {c:"器材哲学",t:"有人说'器材不重要，重要的是眼光'，你的反应？",o:[
+    {t:"说得对……但我还是买了新机身（小声）",s:{G:2}},
+    {t:"完全认同，手机拍的也能胜过相机",s:{L:2}},
+    {t:"眼光重要，但好器材让好作品更好",s:{C:1,G:1}},
+    {t:"这句话通常是没钱买好器材的人说的",s:{F:1,C:1}}
+  ]},
+  {c:"拍人方式",t:"给陌生人拍照，你怎么做？",o:[
+    {t:"直接举相机，眼神接触就是默契",s:{S:2}},
+    {t:"远远地用长焦，不打扰对方",s:{F:2}},
+    {t:"先聊几句，建立信任感再拍",s:{P:2}},
+    {t:"我基本不拍陌生人，太尴尬了",s:{L:2}}
+  ]},
+  {c:"发布标准",t:"什么样的照片你愿意发出去？",o:[
+    {t:"构图、光线、内容都到位才发",s:{C:2}},
+    {t:"情绪对了就行，技术问题可接受",s:{P:2}},
+    {t:"原片好看才算本事，修出来的不算",s:{F:2}},
+    {t:"发出去的都是精选，宁缺毋滥",s:{S:1,C:1}}
+  ]},
+  {c:"社群互动",t:"摄影群有人晒了一张很普通的照片求点评，你会？",o:[
+    {t:"真诚指出不足，顺带给建议",s:{C:2}},
+    {t:"说几句鼓励的，拍照图快乐",s:{P:1,L:1}},
+    {t:"看看就过去了，不回",s:{F:1,S:1}},
+    {t:"写三百字专业点评（有人问才写）",s:{G:2}}
+  ]},
+  {c:"时间成本",t:"拍日出要早起4点，你会？",o:[
+    {t:"冲！错过了就是错过了",s:{L:2}},
+    {t:"提前看好天气，值才去",s:{C:2}},
+    {t:"我更爱夜晚，日出不是我的场",s:{F:2}},
+    {t:"约了朋友一起才有动力去",s:{P:2}}
+  ]},
+  {c:"灵感来源",t:"你的摄影灵感主要来自？",o:[
+    {t:"漫无目的地在街上走，看到就拍",s:{S:2}},
+    {t:"大量看摄影集和展览，积累视觉库",s:{G:2}},
+    {t:"生活本身，情绪到了自然就拍",s:{P:2}},
+    {t:"有明确项目目标，围绕主题去找素材",s:{C:2}}
+  ]},
+  {c:"出片节奏",t:"出去拍一次，你通常拍多少张？",o:[
+    {t:"500张起步，回来再删",s:{G:2}},
+    {t:"精挑细选，按下快门前想清楚，50张以内",s:{C:2,F:1}},
+    {t:"随心情，20张或300张都有可能",s:{S:1,L:1}},
+    {t:"胶片机，一卷36张拍完就收",s:{F:2}}
+  ]},
+  {c:"同行关系",t:"有摄影师约你一起出去拍，你的感受？",o:[
+    {t:"喜欢！互相激发，两个人看到的不一样",s:{P:2}},
+    {t:"可以，但最后都会各自散开拍",s:{S:2}},
+    {t:"更喜欢一个人，有人在旁边会分心",s:{F:2}},
+    {t:"取决于对方水平，不同段位没法聊",s:{G:1,C:1}}
+  ]},
+  {c:"风格色调",t:"你的照片色调通常是？",o:[
+    {t:"高对比黑白，干净有力",s:{F:2,S:1}},
+    {t:"复古胶片感，偏暖或偏绿",s:{L:2}},
+    {t:"高级灰蓝，清冷精致",s:{C:2}},
+    {t:"真实自然色，不想被色调定义",s:{P:2}}
+  ]},
+  {c:"面对批评",t:"你认真拍的照片被说'构图普通，光线一般'，你？",o:[
+    {t:"虚心接受，问对方具体哪里普通",s:{G:2}},
+    {t:"内心动摇，但嘴上说'谢谢'",s:{P:1,L:1}},
+    {t:"这片子你根本没看懂",s:{F:2}},
+    {t:"先分析批评者的审美，再决定要不要听",s:{C:2}}
+  ]},
+  {c:"项目启动",t:"开始拍一个新项目前，你会？",o:[
+    {t:"做大量资料研究，出发前先想清楚",s:{C:2}},
+    {t:"直接去，拍了才知道能拍什么",s:{S:2}},
+    {t:"参考前人作品，找到差异化方向",s:{G:2}},
+    {t:"凭感觉，好项目都是偶然发现的",s:{F:1,P:1}}
+  ]},
+  {c:"摄影意义",t:"对你来说，摄影是什么？",o:[
+    {t:"记录时间，对抗遗忘的方式",s:{P:2}},
+    {t:"追求极致画面的偏执",s:{L:2,C:1}},
+    {t:"社交货币，发出去被点赞很好",s:{G:1,S:1}},
+    {t:"沉默语言，说出语言无法说的东西",s:{F:2}}
+  ]},
+  {c:"器材焦虑",t:"看到同行用了比你贵一倍的镜头，你？",o:[
+    {t:"羡慕但无所谓，眼睛才是最贵的镜头",s:{F:2,P:1}},
+    {t:"立刻去看测评，研究值不值得入",s:{G:2}},
+    {t:"摄影穷三代，正常",s:{L:2}},
+    {t:"工具是工具，看片子说话",s:{C:2,S:1}}
+  ]},
+  {c:"废片心态",t:"一次拍摄回来发现500张全是废片，你会？",o:[
+    {t:"难受但接受，过两天再去一次",s:{L:2}},
+    {t:"逐帧分析哪里出了问题，复盘再出发",s:{G:2}},
+    {t:"找几张废中之宝凑合用",s:{S:2}},
+    {t:"有时候废片才是真实记录，发出来",s:{P:2,F:1}}
+  ]},
+  {c:"商业接单",t:"有人找你拍商业单，但主题不是你喜欢的题材",o:[
+    {t:"接！钱到位什么都可以拍",s:{G:2}},
+    {t:"看需求，不违背审美底线就接",s:{C:2}},
+    {t:"不接，我不想为了钱妥协风格",s:{F:2}},
+    {t:"接，但会想办法在其中做自己的表达",s:{P:2}}
+  ]},
+  {c:"发布习惯",t:"你发摄影作品通常配什么文案？",o:[
+    {t:"详细的拍摄参数、地点、光线说明",s:{G:2}},
+    {t:"一句有点禅意的话，或者什么都不写",s:{F:2}},
+    {t:"拍摄故事，照片背后发生了什么",s:{P:2}},
+    {t:"精心写的文案，和片子同等重要",s:{C:2}}
+  ]},
+  {c:"旅行拍什么",t:"旅行时，你拍的更多是？",o:[
+    {t:"人，当地的面孔、市场、日常生活",s:{P:2,S:1}},
+    {t:"建筑和几何，结构与线条",s:{C:2}},
+    {t:"光线，不管什么被光打中了就拍",s:{L:2}},
+    {t:"偶然瞬间，完全不计划只是游走",s:{S:2}}
+  ]},
+  {c:"他人评价",t:"你最常被别人评价的摄影风格是？",o:[
+    {t:"有自己的语言，辨识度很高",s:{F:2,C:1}},
+    {t:"情绪感强，看了有感觉",s:{P:2}},
+    {t:"技术扎实，每张都稳",s:{G:2}},
+    {t:"随性自然，不刻意",s:{L:2,S:1}}
+  ]},
+  {c:"遭遇瓶颈",t:"感觉拍什么都不满意、陷入创作瓶颈，你会？",o:[
+    {t:"停下来，看书看展，等灵感回来",s:{F:2,P:1}},
+    {t:"强迫自己每天拍，用量换质",s:{S:2,G:1}},
+    {t:"换器材或换题材，刺激新鲜感",s:{G:2}},
+    {t:"找摄影师朋友喝酒聊天",s:{P:2}}
+  ]},
+  {c:"终极追求",t:"你拍照最终追求的是？",o:[
+    {t:"出版一本属于自己的摄影集",s:{F:2}},
+    {t:"形成被他人认可的视觉语言",s:{C:2}},
+    {t:"拍下那些即将消逝的东西",s:{P:2}},
+    {t:"不断进步，技术上越来越强",s:{G:2}}
+  ]},
+  {c:"胶片or数码",t:"胶片和数码，你站哪边？",o:[
+    {t:"胶片。慢下来，每一张都有重量",s:{F:2}},
+    {t:"数码。效率高，后期自由度更大",s:{G:1,C:1}},
+    {t:"都拍，不同感觉不同使用",s:{L:2,S:1}},
+    {t:"手机也是相机，介质不重要",s:{P:1,L:1}}
+  ]},
+  {c:"拍摄状态",t:"你在拍摄现场最常处于什么状态？",o:[
+    {t:"专注，外界一切都消失了",s:{F:2,C:1}},
+    {t:"亢奋，越拍越来劲儿",s:{S:2,G:1}},
+    {t:"平静，像一个观察者",s:{P:2}},
+    {t:"焦虑，总觉得漏掉了什么",s:{L:2,G:1}}
+  ]}
+];
+
+const T={
+  HUNTER:{icon:"🎯",eng:"THE HUNTER",zh:"街头猎人",pill:"纪实系 · 独行侠",
+    desc:"你在街头的样子不像摄影师，更像一个猎人。<em>相机是武器，街道是战场。</em>你不等光，你追光；你不求完美构图，你要那一秒真实的爆发。废片率？那叫试错成本。你的照片有体温、有气味，看完让人觉得自己也站在那条巷子里。毒舌说一句：你的硬盘里有两万张废片，但那三十张好的，其他人拍不出来。",
+    dims:{拍摄节奏:"冲锋型",题材偏好:"街拍纪实",拍摄状态:"永远亢奋",后期态度:"能不动就不动"},
+    quote:"'快门机会只有一次，犹豫就是废片。'",
+    scene:"某个菜市场巷口，你一个人游荡了三小时，喝了两杯茶，和一个修鞋的老头说了话。回来发现最好的一张是他转头的瞬间——你甚至没举相机，是手腕反射动作按的。",
+    compat:["✓ 人文纪实摄影师","✓ 记者系摄影师","✗ 完美主义精修派","✗ 商业棚拍摄影师"],
+    bio:"「用快门记录正在消失的世界」"},
+  GEEK:{icon:"🔬",eng:"THE GEEK",zh:"器材发烧友",pill:"技术系 · 百科全书",
+    desc:"你的购物车里永远有一支镜头 in 你的等待时机。你对MTF曲线的理解比对人生的理解清晰得多。<em>你不只是在拍照，你在进行一项精密的光学实验。</em>你的片子技术无可挑剔，曝光准确，焦点锐利，测评帖写得比教科书还扎实。毒舌说一句：你买器材花的钱够养三个摄影师，但你在群里的发言比那三个人加起来都多。",
+    dims:{拍摄节奏:"研究型",题材偏好:"测评 & 风光",拍摄状态:"永远在研究",后期态度:"LUT大户"},
+    quote:"'这支镜头的焦外奶油感，你们感受一下。'",
+    scene:"你去了一个著名景点，拍了两小时，但最满意的不是风景照，而是一张用来测试新镜头周边画质的样张。回来第一件事是发测评，第二件事才是看照片。",
+    compat:["✓ 同为器材党","✓ 风光摄影师","✗ 手机拍照派","✗ 情绪系摄影师"],
+    bio:"「摄影器材深度使用者 / 所有焦段都值得拥有」"},
+  POET:{icon:"🌿",eng:"THE POET",zh:"情绪诗人",pill:"人文系 · 灵魂观察者",
+    desc:"你拍的不是照片，你拍的是某种感觉——<em>是光打在墙上的三分钟，是陌生人转身前的表情。</em>你的相机是情绪的容器。你不追焦段，不看参数，只问：这张照片让我感觉到什么了吗？你的作品看起来'普通'，却让人看了停下来。毒舌说一句：你的照片有时候太沉了，看你发图就像在听别人倾诉。",
+    dims:{拍摄节奏:"慢热型",题材偏好:"人文 & 肖像",拍摄状态:"沉浸冥想中",后期态度:"微调情绪色"},
+    quote:"'技术是皮，感觉是骨，我只要骨头。'",
+    scene:"你在给一个老奶奶拍肖像，聊了四十分钟，才按了五次快门。但那五张，每一张都是她自己——不是你想象中的她。",
+    compat:["✓ 街头猎人","✓ 纪录片导演系","✗ 商业精修派","✗ 器材发烧友"],
+    bio:"「用照片说那些说不清楚的事」"},
+  CRAFTSMAN:{icon:"⚗️",eng:"THE CRAFTSMAN",zh:"完美主义匠人",pill:"商业系 · 精准控制者",
+    desc:"你拍照之前，构图已经在脑子里排练了三遍。你对每一处细节有偏执的控制欲——<em>光是不是最好方向，白平衡有没有偏，这个元素是否多余。</em>你的片子经得起放大，像钟表一样精密。商业摄影师里你是天花板，比稿很少输。毒舌说一句：你偶尔需要放松，照片不全是几何问题。",
+    dims:{拍摄节奏:"精密型",题材偏好:"商业 & 建筑",拍摄状态:"极度专注",后期态度:"像素级调整"},
+    quote:"'一张照片在按下快门前就已经拍完了。'",
+    scene:"商业棚拍现场，灯位调了九次，让道具师把那个杯子移了半厘米。出片时那个细节只有你自己知道——但你知道。",
+    compat:["✓ 同为精修派","✓ 商业导演","✗ 随性漫游派","✗ 街头猎人"],
+    bio:"「细节是最后的战场 / 商业摄影 & 平面创意」"},
+  WANDERER:{icon:"🌊",eng:"THE WANDERER",zh:"漫游者",pill:"风光系 · 等光的人",
+    desc:"你不赶时间，因为你知道好光不能被催。<em>你愿意在一个地方等两小时，只为云移过来那三十秒。</em>你对自然有近乎宗教的感情，镜头里的山、海、光，是你与世界的和解方式。你的片子让城市里的人深呼吸。毒舌说一句：你发的地点打卡太详细，下次你去，那里已经有二十个三脚架在等你了。",
+    dims:{拍摄节奏:"等待型",题材偏好:"风光 & 自然",拍摄状态:"禅定专注",后期态度:"光影大改"},
+    quote:"'光来了。'",
+    scene:"凌晨三点，你已经在山上架好三脚架。风很冷，保温杯的茶喝完了，日出还有一个半小时。你不觉得这有什么问题。",
+    compat:["✓ 自然摄影师","✓ 旅行摄影师","✗ 棚拍商业派","✗ 街头猎人"],
+    bio:"「追光的人 / 风光摄影 / 随时在去某处的路上」"},
+  FILM:{icon:"🎞️",eng:"THE ARCHIVIST",zh:"胶片守护者",pill:"古典系 · 慢派传教士",
+    desc:"你用胶片，不是因为怀旧，而是因为你相信<em>慢才能看见。</em>每一格都有成本，所以每一格都有思考。你的暗房气味是你的香水，定影液是你的咖啡。你有点不耐烦数码摄影师讨论器材，因为你知道——当他们在纠结传感器的时候，你已经在想构图了。毒舌说一句：你有点清高，但你的照片证明了清高是有道理的。",
+    dims:{拍摄节奏:"克制型",题材偏好:"纪实 & 实验",拍摄状态:"沉静冷静",后期态度:"暗房才算后期"},
+    quote:"'按下快门之前，先想清楚。'",
+    scene:"你带着一卷Portra400进了一个菜市场，三小时后走出来，拍了18张.你知道里面有两张是好的，不确定哪两张——要等冲洗结果。这种不确定感，你上瘾了。",
+    compat:["✓ 情绪诗人","✓ 文艺系创作者","✗ 器材发烧友","✗ 量产派"],
+    bio:"「胶片 · 慢下来才看得见」"},
+  CONNECTOR:{icon:"✨",eng:"THE CONNECTOR",zh:"氛围缔造者",pill:"社群系 · 摄影 culture 推手",
+    desc:"你不只在拍照，你在构建一个场域。<em>你组约拍、建摄影群、组织展览，你是那个把散落的摄影师聚在一起的人。</em>你的片子未必最极致，但你让更多人开始拍照，让更多作品被看见。毒舌说一句：你的摄影时间有一半用来发通知、@成员、管群，但你乐此不疲。",
+    dims:{拍摄节奏:"活跃型",题材偏好:"多元包容",拍摄状态:"永远在线",后期态度:"发出去最重要"},
+    quote:"'一个人走得快，一群人走得远。'",
+    scene:"你组织了一次城市徒步摄影活动，12个人来了，你拍了300张，其中100张是拍别人在拍照。你最喜欢那些照片。",
+    compat:["✓ 所有类型摄影师","✓ 摄影教育者","✗ 极度独行侠","✗ 胶片清高派"],
+    bio:"「📷 摄影组织者 / 让大家都开始拍照」"},
+  MINIMALIST:{icon:"◻️",eng:"THE MINIMALIST",zh:"极边主义者",pill:"极简系 · 少即是多",
+    desc:"你的取景框永远是做减法的过程。多一个元素就是多一分杂乱，<em>你对构图的洁癖比有些人对卫生的洁癖还严重。</em>你的照片让人觉得：够了，这就够了。你很少拍人群，你更爱单个主体、负空间、沉默感。毒舌说一句：你的审美很精准，但你有时候少到空洞。",
+    dims:{拍摄节奏:"克制精准",题材偏好:"建筑 & 抽象",拍摄状态:"冷静旁观",后期态度:"越简越好"},
+    quote:"'拍照就是决定不拍什么。'",
+    scene:"你在一条空旷的长廊里，等了二十分钟，等最后一个人走出画面，按下快门——只有建筑、光线、一个孤独的比例关系。完美。",
+    compat:["✓ 完美主义匠人","✓ 建筑摄影师","✗ 氛围缔造者","✗ 器材发烧友"],
+    bio:"「减法摄影 / 留白是一种态度」"},
+  STORYTELLER:{icon:"📖",eng:"THE STORYTELLER",zh:"叙事者",pill:"项目系 · 长线创作者",
+    desc:"你不拍单张，你拍故事。<em>你的每一个项目都有时间线、起承转合、你想说的话。</em>你会跟拍一个人三个月，只为等那个转折点出现。你对摄影有某种文学式的理解——照片是句子，项目是一本书。毒舌说一句：你太难接短单了，因为你觉得每个委托都应该是一部纪录片。",
+    dims:{拍摄节奏:"长线沉浸",题材偏好:"专题 & 纪录",拍摄状态:"深度投入",后期态度:"服务叙事"},
+    quote:"'一张照片讲不了故事，一个项目可以。'",
+    scene:"你正在做一个关于城中村改造的摄影项目，跑了四个月，认识了三十个居民，下周他们要搬走了。你昨晚失眠，想着有没有漏掉什么重要的瞬间。",
+    compat:["✓ 情绪诗人","✓ 纪录片导演","✗ 商业快消派","✗ 单张极致追求者"],
+    bio:"「长期项目 / 用照片完成一篇文章」"},
+  EXPERIMENTER:{icon:"🔭",eng:"THE EXPERIMENTER",zh:"实验主义者",pill:"先锋系 · 规则破坏者",
+    desc:"你对'好照片'的定义和别人不一样——<em>你更感兴趣的是'有意思的照片'。</em>重曝、漏光、故意过曝——只要结果让你觉得意外，就是成功。你不怕废片，废片有时候就是作品。你是摄影圈里的异类，但大家私下都想看你下一张拍什么。毒舌说一句：你给自己废片找的理由都是'这就是概念'。",
+    dims:{拍摄节奏:"随机爆发",题材偏好:"实验 & 概念",拍摄状态:"永远好奇",后期态度:"大胆破坏"},
+    quote:"'规则是用来打破的，相机是用来玩的。'",
+    scene:"你把相机给了你的五岁侄子，让他拍了半卷。里面有三张让你觉得自己拍不出来。你认真考虑在展览里用这三张。",
+    compat:["✓ 艺术家系摄影师","✓ 胶片守护者","✗ 完美主义匠人","✗ 技术发烧友"],
+    bio:"「实验性视觉创作 / 误用是一种风格」"}
+};
+
+let sc={S:0,G:0,L:0,C:0,P:0,F:0},cur=0,res=null;
+
+function go(){sc={S:0,G:0,L:0,C:0,P:0,F:0};cur=0;show('sq');rq()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+function rq(){
+  const q=Q[cur];
+  const pct=Math.round((cur/Q.length)*100);
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('qn').textContent=(cur+1)+' / '+Q.length;
+  document.getElementById('qcm').textContent=q.c;
+  document.getElementById('qc').textContent=q.c;
+  document.getElementById('qt').textContent=q.t;
+  const el=document.getElementById('qo');el.innerHTML='';
+  [...q.o].sort(()=>Math.random()-.5).forEach(o=>{
+    const b=document.createElement('button');
+    b.className='opt';b.textContent=o.t;
+    b.onclick=()=>pick(b,o.s);el.appendChild(b);
+  });
+}
+function pick(btn,delta){
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  setTimeout(()=>{
+    Object.keys(delta).forEach(k=>sc[k]=(sc[k]||0)+delta[k]);
+    cur++;cur>=Q.length?showR():rq();
+  },300);
+}
+function calcT(){
+  const map={S:'HUNTER',G:'GEEK',P:'POET',C:'CRAFTSMAN',L:'WANDERER',F:'FILM'};
+  const sorted=Object.entries(sc).sort((a,b)=>b[1]-a[1]);
+  const top=sorted[0][0],sec=sorted[1][0],tv=sorted[0][1],sv=sorted[1][1];
+  if(tv-sv<=2){
+    const combo=[top,sec].sort().join('');
+    if(combo==='PS'||combo==='PS') return 'STORYTELLER';
+    if(combo==='CF') return 'MINIMALIST';
+    if(combo==='GS') return 'CONNECTOR';
+    if(combo==='FL') return 'EXPERIMENTER';
+    if(combo==='LP') return 'WANDERER';
+    if(combo==='CG') return 'CRAFTSMAN';
+  }
+  return map[top]||'HUNTER';
+}
+function showR(){
+  const k=calcT();const p=T[k];res=p;
+  document.getElementById('ri').textContent=p.icon;
+  document.getElementById('re').textContent=p.eng;
+  document.getElementById('rz').textContent=p.zh;
+  document.getElementById('rp').textContent=p.pill;
+  document.getElementById('rd').innerHTML=p.desc;
+  document.getElementById('rq').textContent=p.quote;
+  document.getElementById('rsc').textContent=p.scene;
+  document.getElementById('rb2').textContent=p.bio;
+  const dg=document.getElementById('dm');dg.innerHTML='';
+  Object.entries(p.dims).forEach(([k,v])=>dg.innerHTML+=`<div class="dim"><div class="dk">${k}</div><div class="dv">${v}</div></div>`);
+  const cg=document.getElementById('rc');cg.innerHTML='';
+  p.compat.forEach(c=>cg.innerHTML+=`<span class="ctag ${c.startsWith('✓')?'cg':'cb'}">${c}</span>`);
+  document.getElementById('sm').textContent='';
+  show('sr');
+}
+function copyShare(){
+  if(!res)return;
+  const txt=`【PBTI 摄影师人格测试】\n\n我的摄影人格是——\n${res.eng}\n${res.zh} · ${res.pill}\n\n${res.quote}\n\n#摄影师 #摄影 #PBTI摄影人格测试`;
+  if(navigator.share){navigator.share({title:'PBTI摄影师人格测试',text:txt,url:location.href}).catch(()=>{})}
+  else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(()=>{document.getElementById('sm').textContent='✓ 已复制！去小红书发布吧 📷'})}
+  else{document.getElementById('sm').textContent='请截图分享你的测试结果'}
+}
+function restart(){show('ss')}
+
+function exportCard() {
+  if (!res) return;
+  const container = document.getElementById('export-container');
+  container.innerHTML = `
+    <div class="export-card-pbti" id="final-card">
+      <div class="exp-filmstrip">
+        <div class="exp-fr"></div><div class="exp-fr"></div><div class="exp-fr" style="opacity:1"></div><div class="exp-fr"></div>
+      </div>
+      <div class="exp-logo">PBTI</div>
+      <div class="exp-res-eng">${res.eng}</div>
+      <div class="exp-res-zh">${res.zh}</div>
+      <div class="exp-pill">${res.pill}</div>
+      <div class="exp-desc">"${res.quote}"</div>
+      <div class="exp-footer">
+        <div>#PBTI #摄影师人格测试</div>
+        <div>Personality Test Hub</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('sm').textContent = '正在为您生成摄影师专属卡片...';
+  
+  setTimeout(() => {
+    html2canvas(document.getElementById('final-card'), {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#f7f4ee'
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `PBTI_${res.eng}_${new Date().getTime()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      document.getElementById('sm').textContent = '✨ 卡片已下载，快去分享吧！';
+    }).catch(err => {
+      console.error(err);
+      document.getElementById('sm').textContent = '生成失败，请稍后重试';
+    });
+  }, 100);
+}
+</script>
+</body>
+</html>
