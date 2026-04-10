@@ -197,6 +197,16 @@ body{
     <div class="res-section">
       <div class="section-title">进化策略</div>
       <ul class="bullet-list" id="res-growth"></ul>
+    </div>
+    
+    <div class="btn-group" style="padding: 2rem 0; display: grid; gap: 1rem;">
+      <button class="btn-main" onclick="exportCard()">保存完整性格报告卡 💍</button>
+      <button class="btn-sub" onclick="location.reload()" style="background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 0.8rem; border-radius: 10px; cursor: pointer;">重新测试</button>
+    </div>
+  </div>
+
+  <script>
+  const Q = [
     // E-I (1-16)
   {t:"在繁忙的街道上，你更倾向于：",o:[{t:"观察周围的人和事",s:"E"},{t:"沉浸在自己的思考中",s:"I"}]},
   {t:"你更喜欢在团队中头脑风暴，还是独自构思方案？",o:[{t:"集体讨论",s:"E"},{t:"独自思考",s:"I"}]},
@@ -331,7 +341,7 @@ const CAT_LABELS = {
 function render(){
   const q=Q[cur]; 
   document.getElementById('fill').style.width=(cur/Q.length*100)+'%';
-  document.getElementById('qc').textContent=(cur+1)+' / '+Q.length;
+  document.getElementById('qc').textContent='第 '+(cur+1)+' / '+Q.length+' 题';
   document.getElementById('qt').textContent=q.t;
   
   // Set Category Label

@@ -149,8 +149,12 @@ body{
     </div>
 
     <div class="btn-group" style="padding-top:2rem;">
-      <button class="btn-main" onclick="exportCard()">保存完整视觉报告卡 💍</button>
-      <button onclick="location.href='index.html'" style="display:block; width:100%; padding:14  // Street / Moment (S) - 7 qs
+      <button class="btn-sub" onclick="location.href='index.html'" style="display:block; width:100%; padding:1rem; border-radius:12px; border:1px solid var(--border); background:transparent; color:var(--text); font-family:var(--sans); font-size:0.9rem; cursor:pointer; transition:all 0.3s ease;">返回首页</button>
+    </div>
+  </div>
+
+  <script>
+  const Q = [
   {c:"拍摄心理",t:"在拥挤的街道上，你最关注的是：",o:[{t:"人群中瞬间爆发出的情绪或动作",s:{S:2}},{t:"建筑与光影形成的几何结构",s:{C:2}},{t:"某种能触动内心怀旧感的气息",s:{P:2}},{t:"路人的时尚穿搭或肖像潜力",s:{G:1}}]},
   {c:"出片速度",t:"看到心仪的画面，你的通常反应是：",o:[{t:"本能地举机盲拍，不错过那一秒",s:{S:2}},{t:"先停下来构思最佳角度，即便可能错过",s:{C:2}},{t:"观察很久，确认那是“对的感觉”才动",s:{P:2,F:1}},{t:"确定参数到完美才按下快门",s:{G:2}}]},
   {c:"隐蔽性",t:"你希望自己在拍摄现场的状态是：",o:[{t:"隐形人，不惊动背景中的任何人",s:{S:2,F:1}},{t:"掌控者，指挥光影或模特到指定位置",s:{C:2}},{t:"体验者，与被摄对象共情",s:{P:2}},{t:"专家，所有数值都在掌握中",s:{G:2}}]},
@@ -259,7 +263,7 @@ function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.re
 function render(){
   const q=Q[cur];
   document.getElementById('pf').style.width=(cur/Q.length*100)+'%';
-  document.getElementById('qc').textContent=(cur+1)+' / '+Q.length;
+  document.getElementById('qc').textContent='第 '+(cur+1)+' / '+Q.length+' 题';
   document.getElementById('q-dim').textContent = q.c;
   document.getElementById('qt').textContent=q.t;
   const el=document.getElementById('qo'); el.innerHTML='';
